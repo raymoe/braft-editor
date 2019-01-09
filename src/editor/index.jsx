@@ -13,6 +13,9 @@ import { getBlockRendererFn, getBlockRenderMap, getBlockStyleFn, getCustomStyleM
 import { compositeStyleImportFn, compositeStyleExportFn, compositeEntityImportFn, compositeEntityExportFn, compositeBlockImportFn, compositeBlockExportFn, getPropInterceptors } from 'helpers/extension'
 import ControlBar from 'components/business/ControlBar'
 
+import { convertToRaw } from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
+
 const buildHooks= (hooks) => (hookName, defaultReturns = {}) => {
   return hooks[hookName] || (() => defaultReturns)
 }
@@ -182,14 +185,14 @@ export default class BraftEditor extends React.Component {
 
         const tempColors = ColorUtils.detectColorsFromDraftState(nextEditorState.toRAW(true))
         nextEditorState.setConvertOptions(getConvertOptions(this.editorProps))
-  
+
         this.setState({
           tempColors: filterColors([...this.state.tempColors, ...tempColors], currentProps.colors),
           editorState: nextEditorState
         }, () => {
           this.props.onChange && this.props.onChange(nextEditorState)
         })
-  
+
       } else {
         this.setState({
           editorState: nextEditorState
@@ -423,6 +426,9 @@ export default class BraftEditor extends React.Component {
       >
         <ControlBar {...controlBarProps} />
         {componentBelowControlBar}
+        <div>
+          <button onClick={this.onClickTest}>test</button>
+        </div>
         <div
           onCompositionStart={this.handleCompositionStart}
           className={`bf-content ${contentClassName}`}
@@ -435,6 +441,21 @@ export default class BraftEditor extends React.Component {
 
   }
 
+  onClickTest = ()=>
+  {
+    const editorState = this.state.editorState
+    console.log(editorState)
+    const rawContentState = convertToRaw(editorState.getCurrentContent())
+    const hashConfig = {
+      trigger: '#',
+      separator: ' ',
+    }
+    const markup = draftToHtml(
+      rawContentState,
+      hashConfig,
+    )
+    console.log(markup)
+  }
 }
 
 export { EditorState }

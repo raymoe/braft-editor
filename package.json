@@ -68,6 +68,7 @@
     "draft-convert": "^2.0.0",
     "draft-js": "^0.10.3",
     "draft-js-multidecorators": "^1.0.0",
+    "draftjs-to-html": "^0.8.4",
     "draftjs-utils": "^0.9.4",
     "immutable": "~3.7.4"
   },
